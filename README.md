@@ -1,2 +1,2 @@
 # AkademiaDotNet
-They are housework in the week of training
+They are homework in the week of training
