@@ -1,0 +1,78 @@
+#tworzenie bazy danych
+	CREATE DATABASE Enterprise;
+
+#tworzenie następujących tabel
+	CREATE TABLE products (
+		id_product SERIAL PRIMARY KEY,
+		name_product VARCHAR(40) NOT NULL,
+		price REAL NOT NULL DEFAULT 0
+	);
+	
+	CREATE TABLE clients (
+		id_client SERIAL PRIMARY KEY,
+		name VARCHAR(15) NOT NULL,
+		surname VARCHAR(20) NOT NULL,
+		city VARCHAR(20) NOT NULL,
+		phone INTEGER NOT NULL,
+		email VARCHAR(50) NOT NULL
+	);
+	
+	CREATE TABLE invoices (
+		id_invoice SERIAL PRIMARY KEY,
+		number_invoice INTEGER NOT NULL UNIQUE,
+		id_client NOT NULL REFERENCES clients,
+		date_create DATE NOT NULL
+	);
+	
+	CREATE TABLE invoices_items (
+		id_items SMALLINT NOT NULL,
+		id_invoice INTEGER NOT NULL REFERENCES invoices,
+		id_product INTEGER NOT NULL REFERENCES products,
+		quantity INTEGER NOT NULL DEFAULT 1,
+		UNIQUE(id_invoice, id_items)
+	);
+	
+#wypełnianie danymi
+	INSERT INTO products (name_product, price) VALUES ('procesor Intel i3', 300);
+	INSERT INTO products (name_product, price) VALUES ('procesor Intel i5', 650);
+	...
+	INSERT INTO products (name_product, price) VALUES ('Gra Minecraft', 99.99);
+	INSERT INTO products (name_product, price) VALUES ('Gra Factorio', 70);
+	...
+	INSERT INTO clients (name, surname, city, phone, email) VALUES ('Radosław','Staropolski','Toruń',123456789,'Rad.staropolski@gmail.com');
+	INSERT INTO clients (name, surname, city, phone, email) VALUES ('Mirek','Kotarski','Łudź',123456789,'miro_kotarski99@gmail.com');
+	...
+	INSERT INTO invoices (number_invoice, id_client, data_create) VALUES (2512,1,'2021-01-22');
+	INSERT INTO invoices (number_invoice, id_client, data_create) VALUES (3542,3,'2020-01-22');
+	...
+	INSERT INTO invoices_items VALUES (1,1,3);
+	INSERT INTO invoices_items VALUES (2,1,4,5);
+	INSERT INTO invoices_items VALUES (2,2,6,10);
+	INSERT INTO invoices_items VALUES (3,2,4);
+	...
+	
+#select
+	SELECT number_invoice, name, surname FROM clients NATURAL JOIN invoices;
+	SELECT number_invoice, name_product, price FROM invoices NATURAL JOIN invoices_items NATURAL JOIN products;
+		SELECT number_invoice, name_product, price FROM invoices NATURAL JOIN invoices_items NATURAL JOIN products WHERE number_invoice = 2512;
+	SELECT number_invoice, SUM(quantity) FROM invoices NATURAL JOIN invoices_items GROUP BY number_invoice;
+	SELECT number_invoice, ROUND(SUM(quantity * price)::NUMERIC, 2) FROM invoices NATURAL JOIN invoices_items NATURAL JOIN products GROUP BY number_invoice;
+	
+#inne 
+	DROP TABLE invoices CASCADE;
+	DELETE FROM clients WHERE id_client = 7;
+	UPDATE clients SET email = 'AdamNowaczyk@o2.pl' WHERE id_client = 5;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
